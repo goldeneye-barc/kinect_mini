@@ -4,7 +4,7 @@ import frame_convert2
 import sys
 import time
 
-ROOT_PATH = sys.argv[1] if len(sys.argv) > 1 else './rover_1'
+ROOT_PATH = sys.argv[1] if len(sys.argv) > 1 else './data/calibration'
 DELAY = int(sys.argv[2]) if len(sys.argv) > 2 else 10
 RGB_PATH = 'rgb'
 DEPTH_PATH = 'depth'
