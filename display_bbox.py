@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from bboxstep import BoundingBoxSim
-images_path, cfg_path, weights_path, data_path, num_images ="./data/straight_line_forward/rgb/", "./neural_net/yolo-obj.cfg", "./neural_net/yolo-obj.backup", "./neural_net/obj.data", 48
+images_path, cfg_path, weights_path, data_path, num_images ="./data/straight_line_forward/rgb/", "./neural_net/yolo-obj.cfg", "./neural_net/rover.weights", "./neural_net/obj.data", 48
 image_sim = BoundingBoxSim(images_path=images_path, weights_path=weights_path, data_path=data_path, num_images=num_images, cfg_path=cfg_path)
 
 image_sim.simulate()
