@@ -10,6 +10,7 @@ RGB_PATH = 'rgb'
 DEPTH_PATH = 'depth'
 DEBUG = len(sys.argv) > 3 and sys.argv[3] == "debug"
 
+
 def display_depth(delay):
     i = 0
     while 1:
