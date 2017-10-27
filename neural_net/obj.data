@@ -1,5 +1,5 @@
 classes= 1  
 train  = train.txt  
 valid  = test.txt  
-names = /Users/ragz/Documents/projects/goldeneye/kinect/tests/neural_net/obj.names  
+names = /home/paperspace/kinect_mini/neural_net/obj.data
 backup = backup

@@ -1,4 +1,6 @@
+from __future__ import division
 import pickle
+import time
 import darknet as dn
 
 class BoundingBoxSim:
@@ -30,28 +32,35 @@ class BoundingBoxSim:
         net = dn.load_net(self.cfg_path, self.weights_path, 0)
         meta = dn.load_meta(self.data_path)
         max_val = self.num_images
+	time_taken = []
         for i in range(self.num_images + 1):
-            if i < len(self.bbox_data):
-                continue
-            image = "{}{}.jpg".format(self.images_path, i)
-            result = dn.detect(net, meta, image)
-            coords = result[0][2]
-            x,y,w,h = [int(coord) for coord in coords]
-            self.bbox_data.append(
-                    {
-                        'image': image,
-                        'center': (x, y),
-                        'width': w,
-                        'height': h,
-                        'top_left': (max(x-w/2, 0), max(y-h/2, 0)), 
-                        'bottom_right': (x+w/2, y+h/2)
-                    })
-            pickle.dump(self.bbox_data, open('{}/bboxdata.p'.format(self.images_path), 'wb'))
-            print image
-            print self.bbox_data[i]
-            print "Saved array to image path"
-            print "-------------------------"
+	    start = time.clock()
+	    try:
+		    if i < len(self.bbox_data):
+			continue
+		    image = "{}{}.jpg".format(self.images_path, i)
+		    result = dn.detect(net, meta, image)
+		    time_taken.append(time.clock() - start)
+		    coords = result[0][2]
+		    x,y,w,h = [int(coord) for coord in coords]
+		    self.bbox_data.append(
+			    {
+				'image': image,
+				'center': (x, y),
+				'width': w,
+				'height': h,
+				'top_left': (max(x-w//2, 0), max(y-h//2, 0)), 
+				'bottom_right': (x+w//2, y+h//2)
+			    })
+		    pickle.dump(self.bbox_data, open('{}/bboxdata.p'.format(self.images_path), 'wb'))
+		    print image
+		    print self.bbox_data[i]
+		    print "Saved array to image path"
+		    print "-------------------------"
+	    except Exception:
+		    print "Error with image"
         print "Done simulating"
+	print "Average time take was " + str(sum(time_taken)/len(time_taken))+ "seconds"
 
     def reset(self):
         """

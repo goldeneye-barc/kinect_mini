@@ -1,9 +1,6 @@
 from ctypes import *
 import math
 import random
-import cv2
-import numpy as np
-from PIL import Image
 
 def sample(probs):
     s = sum(probs)
@@ -35,13 +32,13 @@ class METADATA(Structure):
                 ("names", POINTER(c_char_p))]
 
 #lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
-lib = CDLL("./neural_net/libdarknet.so", RTLD_GLOBAL)
+lib = CDLL("libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
 lib.network_height.restype = c_int
 
-predict = lib.network_predict_p
+predict = lib.network_predict
 predict.argtypes = [c_void_p, POINTER(c_float)]
 predict.restype = POINTER(c_float)
 
@@ -60,13 +57,13 @@ make_probs = lib.make_probs
 make_probs.argtypes = [c_void_p]
 make_probs.restype = POINTER(POINTER(c_float))
 
-detect = lib.network_predict_p
+detect = lib.network_predict
 detect.argtypes = [c_void_p, IMAGE, c_float, c_float, c_float, POINTER(BOX), POINTER(POINTER(c_float))]
 
 reset_rnn = lib.reset_rnn
 reset_rnn.argtypes = [c_void_p]
 
-load_net = lib.load_network_p
+load_net = lib.load_network
 load_net.argtypes = [c_char_p, c_char_p, c_int]
 load_net.restype = c_void_p
 
@@ -117,25 +114,14 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
     return res
     
 if __name__ == "__main__":
-    net = load_net("cfg/yolo-obj.cfg", "results/yolo-obj.backup", 0)
-    meta = load_meta("cfg/obj.data")
-    """
-    max_val = 257
-    i = 0
-    ROOT_PATH = "../tests/data/straight_line_forward/rgb/"
-    while i <= max_val:
-        r = detect(net, meta, "{}{}.jpg".format(ROOT_PATH, i))
-        img = np.load("{}{}.npy".format(ROOT_PATH, i))
-        coords = r[0][2]
-        coords = [int(coord) for coord in coords]
-        x,y,w,h = coords
-        cv2.rectangle(img, (max(x-w/2, 0), max(y-h/2, 0)), (x+w/2, y+h/2), (0,255,0), 3)
-        img = Image.fromarray(img, 'RGB')
-        img.save('{}/{}_bounded.jpg'.format(ROOT_PATH, i))
-        print "{}{}.jpg".format(ROOT_PATH, i)
-        print r
-        i += 1
-    """
-
+    #net = load_net("cfg/densenet201.cfg", "/home/pjreddie/trained/densenet201.weights", 0)
+    #im = load_image("data/wolf.jpg", 0, 0)
+    #meta = load_meta("cfg/imagenet1k.data")
+    #r = classify(net, meta, im)
+    #print r[:10]
+    net = load_net("neural_net/yolo-obj.cfg", "neural_net/rover.weights", 0)
+    meta = load_meta("neural_net/obj.data")
+    r = detect(net, meta, "data/dog.jpg")
+    print r
     
 
