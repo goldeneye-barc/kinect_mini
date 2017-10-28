@@ -4,7 +4,7 @@ from bboxstep import BoundingBoxSim
 images_path, cfg_path, weights_path, data_path, num_images ="./data/straight_line_forward/rgb/", "./neural_net/yolo-obj.cfg", "./neural_net/rover.weights", "./neural_net/obj.data", 200
 image_sim = BoundingBoxSim(images_path=images_path, weights_path=weights_path, data_path=data_path, num_images=num_images, cfg_path=cfg_path)
 
-image_sim.simulate(True)
+image_sim.simulate()
 
 while image_sim.step():
     curr_state = image_sim.curr_state
