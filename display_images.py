@@ -19,9 +19,10 @@ def display_depth(delay):
             cv2.imshow('Depth', frame_convert2.pretty_depth_cv(data))
             if cv2.waitKey(delay) == 27:
                 break
-        except FileNotFoundError:
+        except Exception:
             break
-        DEBUG and print(i)
+        if DEBUG:
+            print i
         i += 1
 
 
@@ -33,14 +34,15 @@ def display_rgb(delay):
             cv2.imshow('RGB', frame_convert2.video_cv(data))
             if cv2.waitKey(delay) == 27:
                 break
-        except FileNotFoundError:
+        except Exception:
             break
-        DEBUG and print(i)
+        if DEBUG:
+            print i
         i += 1
 
 
 if __name__ == '__main__':
-    display_rgb(DELAY)
     display_depth(DELAY)
+    display_rgb(DELAY)
 
 

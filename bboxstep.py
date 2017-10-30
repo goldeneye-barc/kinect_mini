@@ -60,7 +60,8 @@ class BoundingBoxSim:
 	    except Exception:
 		    print "Error with image"
         print "Done simulating"
-	print "Average time take was " + str(sum(time_taken)/len(time_taken))+ "seconds"
+        if len(time_taken) > 0:
+            print "Average time take was " + str(sum(time_taken)/len(time_taken))+ "seconds"
 
     def reset(self):
         """
