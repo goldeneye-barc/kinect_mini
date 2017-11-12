@@ -1,3 +1,4 @@
+from __future__ import division
 import cv2
 import numpy as np
 import frame_convert2
@@ -25,7 +26,6 @@ def rgb_rect(state):
 
 def calc_coords(depth_path, state):
     depth = np.load(depth_path)
-
     x1, y1 = state['top_left']
     x2, y2 = state['bottom_right']
     truncated_depth = depth[y1:y2,x1:x2]
@@ -48,25 +48,30 @@ def calc_coords(depth_path, state):
 def analyze_coords(coords):
     pass
 
-def plot_states(*args):
-    for i, arg in enumerate(args):
+def plot_states(**kwargs):
+    for i, kw in enumerate(kwargs.keys()):
+        arg = kwargs[kw]
         end_time = 1 / 30 * len(arg)
         t = np.linspace(0, end_time, len(arg))
         assert len(t) == len(arg)
         plt.figure(i)
-        plt.plot(arg, 'ro-')
+        plt.plot(arg)
+        plt.title(kw)
     plt.show()
 
 def main():
-    all_images_path= "./data/u_turn"
-    images_path, cfg_path, weights_path, data_path, num_images = all_images_path+"/rgb/", "./neural_net/yolo-obj.cfg", "./neural_net/rover.weights", "./neural_net/obj.data", 150
+    all_images_path= "../data/u_turn"
+    images_path, cfg_path, weights_path, data_path, num_images = all_images_path+"/rgb/", "./neural_net/yolo-obj.cfg", "./neural_net/rover.weights", "./neural_net/obj.data", 10
     image_sim = BoundingBoxSim(images_path=images_path, weights_path=weights_path, data_path=data_path, num_images=num_images, cfg_path=cfg_path)
 
     image_sim.simulate()
 
     # Analyzing variables
+    global world_coords
     world_coords = []
     xvel = []
+    yvel = []
+    zvel = []
 
     while image_sim.step():
         # Get current step and state
@@ -82,14 +87,14 @@ def main():
 
         # Analyze obtained coordinates
         analyze_coords(coords)
-        print "World Coordinates", coords
-        world_coords.append(coords)
-        x = world_coords[-1][0]
-        print "Dist X travelled", x - world_coords[0][0]
+        print "World Coordinates (cm)", coords
+        world_coords.append([100 * coord for coord in coords])
         if len(world_coords) > 1:
-            vel = x - world_coords[-2][0]
-            xvel.append(vel)
-            print "Vel", vel, np.mean(xvel), np.std(np.array(xvel))
+            T = 1 / 30
+            xvel.append((world_coords[-1][0]-world_coords[-2][0])/ T )
+            yvel.append((world_coords[-1][1]-world_coords[-2][1])/ T )
+            zvel.append((world_coords[-1][2]-world_coords[-2][2]) /T )
+            print "Velocities (cm / s)", xvel[-1], yvel[-1], zvel[-1]
 
 
         # Display images
@@ -101,7 +106,7 @@ def main():
 
     # Plotting functions
     world_coords = np.array(world_coords)
-    plot_states(world_coords[:, 0], world_coords[:, 1], world_coords[:, 2], xvel)
+    plot_states(x=world_coords[:, 0], y=world_coords[:, 1], z=world_coords[:, 2], xvel=xvel, yvel=yvel, zvel=zvel)
         
 if __name__=="__main__":
     main()

@@ -9,7 +9,7 @@ import os
 cv2.namedWindow('Depth')
 cv2.namedWindow('RGB')
 keep_running = True 
-ROOT_PATH = './data/lane_change'
+ROOT_PATH = '../data/lane_change'
 RGB_PATH = 'rgb'
 DEPTH_PATH = 'depth'
 
