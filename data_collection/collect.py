@@ -2,8 +2,11 @@
 import freenect
 import cv2
 import numpy as np
-import frame_convert2
 import os
+
+import sys
+sys.path.insert(0, '../utils') # allows utils to work
+import frame_convert2
 
 # Calibration measurement is approximately 79cm away for the rover
 cv2.namedWindow('Depth')

@@ -1,10 +1,12 @@
 from __future__ import division
 import cv2
 import numpy as np
-import frame_convert2
 import matplotlib.pyplot as plt
 from bboxstep import BoundingBoxSim
 
+import sys
+sys.path.insert(0, '../utils') # allows utils to work
+import frame_convert2
 
 def argminmax_constrained(arr, x_s, y_s, x_e, y_e):
     curr_min, curr_max, max_ind, min_ind = float('infinity'), -float('infinity'), [0,0], [0,0]
